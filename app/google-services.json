@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "627432106227",
+    "firebase_url": "https://love-letter-92bf5.firebaseio.com",
+    "project_id": "love-letter-92bf5",
+    "storage_bucket": "love-letter-92bf5.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:627432106227:android:c2b1e9b03ac2d4d0",
+        "android_client_info": {
+          "package_name": "com.example.junaidpatel.loveletter"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "627432106227-23dtmp8nbfbbl3l4q521d7rtrnbalu7a.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.junaidpatel.loveletter",
+            "certificate_hash": "c26f177ead0c6901c726c3c316bcd7d1268c83db"
+          }
+        },
+        {
+          "client_id": "627432106227-cerqboaed0rphaju3utgrtaaegvrhtd6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC0Zp9BO04dIawUwGpWVMm6mqMeKsMVy-A"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "627432106227-cerqboaed0rphaju3utgrtaaegvrhtd6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
