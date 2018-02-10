@@ -8,12 +8,9 @@ package com.example.junaidpatel.loveletter;
 
 public interface Card {
 
-    int getCardValue();
     String getCardAbility();
     String getCardName();
-    int getImageId();
-    void setImageId(int imageId);
 
-    int specialFunction(Player currentPlayer, Player targetPlayer1, Player targetPlayer2, Player targetPlayer3, int length, Card[] deck, int tag, int cardChoice, int guardChoice);
+    void specialFunction(Game game, Integer choice, Player currentPlayer, Player targetPlayer);
 
 }

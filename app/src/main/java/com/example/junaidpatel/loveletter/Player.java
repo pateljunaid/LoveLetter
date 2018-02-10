@@ -1,72 +1,40 @@
 package com.example.junaidpatel.loveletter;
 
-
 /**
  * Getters and setters for each player object
  * Keeps track of certain variables that are unique to each player such as player score
- * Created by padcf, paulvincentphillips & bradyc12 on 19/11/2016.
+ * Created by pateljunaid
  */
 
 public class Player {
-
-    public boolean isHost() {
-        return this.playerId == 1;
-    }
-
-    public void setHost(boolean host) {
-        isHost = host;
-    }
-
     private boolean isHost;
-    private boolean isInGame;
-    private int playerId = -1;
-    private int playerScore = 0;
+    private boolean inGame;
+    private boolean playedFour;
     private String playerName;
-    private boolean isPlaying = true;
-    private Card card1;
-    private Card card2;
-    private boolean playedHandmaid = false;
-    private int cardChoice = 0;
-    private int potentialNumberOfCardsPlayed = 16;
+    private Integer playerId;
+    private Integer lastPlayed;
+    private Integer card1;
+    private Integer card2;
 
-    //array to store cards played by a player + counter to store place in array
-    private  Card[] playedCards = new Card[potentialNumberOfCardsPlayed];
-
-    private int numberOfCardsPlayedThisRound = -1;
-
-
-    //getter and setter methods for state
-
-    public int getCardChoice(){
-        return cardChoice;
+    public Player() {
+        //Default values
+        this.lastPlayed = 0;
     }
 
-    public void setCardChoice(int cardChoice){
-        this.cardChoice = cardChoice;
-    }
-
-    public Card getCard2() {
-        return card2;
-    }
-
-    public void setCard2(Card card2) {
-        this.card2 = card2;
-    }
-
-    public Card getCard1() {
+    public Integer getCard1() {
         return card1;
     }
 
-    public void setCard1(Card card1) {
+    public void setCard1(Integer card1) {
         this.card1 = card1;
     }
 
-    public void setScore(int score){
-        playerScore = score;
+    public Integer getCard2() {
+        return card2;
     }
 
-    public int getPlayerScore(){
-        return playerScore;
+    public void setCard2(Integer card2) {
+        this.card2 = card2;
     }
 
     public void setPlayerName(String name){
@@ -77,69 +45,6 @@ public class Player {
         return playerName;
     }
 
-    public void setPlaying(boolean playing){
-        isPlaying = playing;
-    }
-
-    public boolean getIsPlaying(){
-        return isPlaying;
-    }
-
-    public boolean isPlayedHandmaid() {
-        return playedHandmaid;
-    }
-
-    public void setPlayedHandmaid(boolean playedHandmaid) {
-        this.playedHandmaid = playedHandmaid;
-    }
-
-    public int getNumberOfCardsPlayedThisRound() { return numberOfCardsPlayedThisRound; }
-
-    public void setNumberOfCardsPlayedThisRound(int numberOfCardsPlayedThisRound) { this.numberOfCardsPlayedThisRound = numberOfCardsPlayedThisRound; }
-
-    public boolean isPlayedCardsArrayEmpty() {
-        if (numberOfCardsPlayedThisRound == -1) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    }
-
-    public String getPlayedCards() {
-
-        String toReturn = "";
-
-        if(!isPlayedCardsArrayEmpty()) //if the array is not empty then print out below
-        {
-            for(int i = 0; i<= numberOfCardsPlayedThisRound; i++)
-            {
-                toReturn = toReturn + " " + playedCards[i].getCardName() + ", ";
-                //toReturn + " " + playedCards[0].getCardName();
-            }
-
-
-            return toReturn;
-        }
-        else
-        {
-            return  "-";
-        }
-
-    }
-
-    //method to add a playedCard to the playedCardsArray
-    public void setPlayedCard(Card card)
-    {
-        numberOfCardsPlayedThisRound++; //increment the arrayLength
-        this.playedCards[numberOfCardsPlayedThisRound] = card; //insert the card
-    }
-
-    public void resetPlayedCardsArray()
-    {
-        numberOfCardsPlayedThisRound = -1;
-    }
-
     public int getPlayerId() {
         return playerId;
     }
@@ -148,12 +53,46 @@ public class Player {
         this.playerId = playerId;
     }
 
+    public boolean isHost() {
+        return this.playerId == 1;
+    }
+
+    public void setHost(boolean host) {
+        isHost = host;
+    }
+
     public boolean isInGame() {
-        return isInGame;
+        return inGame;
     }
 
     public void setInGame(boolean inGame) {
-        isInGame = inGame;
+        this.inGame = inGame;
     }
+
+    public Integer getLastPlayed() {
+        return lastPlayed;
+    }
+
+    public void setLastPlayed(Integer lastPlayed) {
+        this.lastPlayed = lastPlayed;
+    }
+
+    public void setPlayedFour(boolean playedFour) {
+        this.playedFour = playedFour;
+    }
+
+    public boolean getPlayedFour() {
+        return playedFour;
+    }
+
+    public String getSecretMessage() {
+        return secretMessage;
+    }
+
+    public void setSecretMessage(String secretMessage) {
+        this.secretMessage = secretMessage;
+    }
+
+    private String secretMessage;
 
 }
