@@ -16,7 +16,7 @@ public class Five implements Card{
     }
 
     @Override
-    public void  specialFunction(Game game, Integer choice, Player currentPlayer, Player targetPlayer) {
+    public void  specialFunction(Game game, Player currentPlayer, Player targetPlayer) {
         targetPlayer.setCard1(game.drawCard());
         game.addBroadcast(currentPlayer.getPlayerName() + " targeted " + targetPlayer.getPlayerName() + ". They drew a new card!");
     }

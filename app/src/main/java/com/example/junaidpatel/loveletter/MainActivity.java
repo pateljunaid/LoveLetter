@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,16 +28,16 @@ public class MainActivity extends AppCompatActivity {
     public static Player player;
     public static Constants constants;
     public FirebaseDatabase fbd;
-    private static Button startGame;
-    private static ImageView card1;
-    private static ImageView card2;
-    private static ImageView topCard;
+    public static ImageView card2;
+    public static ImageView card1;
+    public static ImageView topCard;
+    public static Button startGame;
     private static ImageView deck;
     private static TextView notifs;
     private static TextView playerList;
-    private static Context mContext;
+    public static Context mMainActivity;
     private boolean offline = false;
-    private AlertDialog radioDialog;
+    private boolean single = false;
     private Button resetDB;
     private static Integer guess;
 
@@ -51,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        mContext = getApplicationContext();
+        mMainActivity = this;
 
         //to remove the action bar (title bar)
         getSupportActionBar().hide();
@@ -59,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
 
         //Initialize Resources
         initializeResources();
+
+        if (single) {
+            resetGame();
+        }
 
         //Initialize a game and player
         player = new Player();
@@ -151,13 +154,7 @@ public class MainActivity extends AppCompatActivity {
         resetDB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                game.setBroadcast("");
-                game.setHasStarted(false);
-                game.setPlayers(new ArrayList<Player>());
-                game.setTopCard(null);
-                game.setDeck(constants.deck);
-                game.turn = 0;
-                FirebaseDatabase.getInstance().getReference("gameData").setValue(game);
+            resetGame();
             }
         });
 
@@ -169,9 +166,19 @@ public class MainActivity extends AppCompatActivity {
                 pushData();
             }
         });
-
     }
 
+    private void resetGame() {
+        Game game = new Game();
+        game.setBroadcast("");
+        game.setHasStarted(false);
+        game.setPlayers(new ArrayList<Player>());
+        game.playerNames = new ArrayList<String>();
+        game.setTopCard(null);
+        game.setDeck(constants.deck);
+        game.turn = 0;
+        FirebaseDatabase.getInstance().getReference("gameData").setValue(game);
+    }
     private void setListeners() {
         card1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -210,42 +217,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void showToast(String s) {
-        Toast.makeText(mContext, s, Toast.LENGTH_LONG).show();
+        Toast.makeText(mMainActivity, s, Toast.LENGTH_LONG).show();
     }
 
-    public Integer showRadioDialog(CharSequence[] values){
-        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Select target player");
-        builder.setSingleChoiceItems(values, -1, new DialogInterface.OnClickListener() {
-            public void onClick(DialogInterface dialog, int item) {
-                MainActivity.guess = item;
-                radioDialog.dismiss();
-            }
-        });
-        radioDialog = builder.create();
-        radioDialog.show();
 
-        return MainActivity.guess;
-    }
-
-    public void showInputDialog(String title, String msg, String hint) {
-        final EditText txtUrl = new EditText(this);
-
-        txtUrl.setHint(hint);
-
-        new AlertDialog.Builder(this)
-                .setTitle(title)
-                .setMessage(msg)
-                .setView(txtUrl)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                        game.playCard(player, game.nextPlayer(player), player.getCard1(), 2, 1);
-                    }
-                })
-                .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int whichButton) {
-                    }
-                })
-                .show();
-    }
 }

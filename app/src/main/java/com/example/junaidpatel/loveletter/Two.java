@@ -17,7 +17,7 @@ public class Two implements Card {
     }
 
     @Override
-    public void specialFunction(Game game, Integer choice, Player currentPlayer, Player targetPlayer) {
+    public void specialFunction(Game game, Player currentPlayer, Player targetPlayer) {
         game.addBroadcast(currentPlayer.getPlayerName() + " took a peak at " + targetPlayer.getPlayerName() +
         "'s card");
         MainActivity.showToast(targetPlayer.getPlayerName() + "is holding a " + targetPlayer.getCard1());

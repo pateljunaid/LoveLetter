@@ -15,7 +15,7 @@ public class Four implements Card{
     }
 
     @Override
-    public void specialFunction(Game game, Integer choice, Player currentPlayer, Player targetPlayer) {
+    public void specialFunction(Game game, Player currentPlayer, Player targetPlayer) {
         currentPlayer.setPlayedFour(true);
         game.addBroadcast(currentPlayer.getPlayerName() + " is protected for the round");
     }

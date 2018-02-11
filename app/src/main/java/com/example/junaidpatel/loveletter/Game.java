@@ -1,5 +1,7 @@
 package com.example.junaidpatel.loveletter;
 
+import android.content.DialogInterface;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 
@@ -13,15 +15,16 @@ import java.util.HashMap;
  */
 
 public class Game {
+    public ArrayList<String> playerNames = new ArrayList<String>();
     private ArrayList deck;
     private ArrayList<Player> players;
     private HashMap<Integer, Player> playersMap;
-    private HashMap<Integer, Card> cards = new HashMap<Integer, Card>();
+    private HashMap<Integer, Card> cardsMap = new HashMap<Integer, Card>();
     private Integer topCard;
-    protected Integer turn;
     private String broadcast;
     private boolean gameOn;
     private boolean hasStarted;
+    protected Integer turn;
 
     public Game() {
         this.deck = MainActivity.constants.deck;
@@ -36,14 +39,14 @@ public class Game {
         Card six = new Six();
         Card seven = new Seven();
         Card eight = new Eight();
-        cards.put(1, one);
-        cards.put(2, two);
-        cards.put(3, three);
-        cards.put(4, four);
-        cards.put(5, five);
-        cards.put(6, six);
-        cards.put(7, seven);
-        cards.put(8, eight);
+        cardsMap.put(1, one);
+        cardsMap.put(2, two);
+        cardsMap.put(3, three);
+        cardsMap.put(4, four);
+        cardsMap.put(5, five);
+        cardsMap.put(6, six);
+        cardsMap.put(7, seven);
+        cardsMap.put(8, eight);
     }
 
 
@@ -61,6 +64,12 @@ public class Game {
 
     public ArrayList<Integer> agetDeck() {
         return deck;
+    }
+
+    public ArrayList<Integer> agetGuessDeck() {
+        ArrayList<Integer> newList = new ArrayList<Integer>(this.deck);
+        newList.removeAll(Collections.singleton(1));
+        return newList;
     }
 
     public void setDeck(ArrayList<Integer> deck) {
@@ -105,6 +114,7 @@ public class Game {
         }
 
         this.playersMap.put(player.getPlayerId(), player);
+        this.playerNames.add(player.getPlayerName());
     }
 
     public void endGame() {
@@ -131,9 +141,9 @@ public class Game {
     }
 
     public void deal() {
-        Collections.shuffle(this.deck);
+        //TODO: Collections.shuffle(this.deck);
         Log.d("yakkity", this.deck.toString());
-//        int burned = (int) this.deck.remove(0);
+        //TODO: int burned = (int) this.deck.remove(0);
         for (Player player: this.players) {
             player.setCard1(this.drawCard());
         }
@@ -143,9 +153,13 @@ public class Game {
         return (Integer) this.deck.remove(0);
     }
 
-    public void playCard(Player currPlayer,Integer card, int cardNum) {
-        currPlayer.setLastPlayed(card);
-        this.topCard = card;
+    public void playCard(Player currPlayer, int card, int cardNum) {
+        final Player curr = currPlayer;
+        final int mCard = card;
+        ArrayList<String> tempPlayerNames = (ArrayList<String>) this.playerNames.clone();
+//        tempPlayerNames.remove(currPlayer.getPlayerName());
+
+        MainActivity.card2.setVisibility(View.INVISIBLE);
 
         if (cardNum == 1) {
             currPlayer.setCard1(currPlayer.getCard2());
@@ -154,18 +168,37 @@ public class Game {
         else {
             currPlayer.setCard2(null);
         }
-        MainActivity.card2.setVisibility(View.INVISIBLE);
 
         this.addBroadcast(currPlayer.getPlayerName() + " has played " + card);
 
-        if (targetPlayer.getLastPlayed() != 4) {
-            cards.get(card).specialFunction(this, guess, currPlayer, targetPlayer);
-        }
-        else {
-            this.addBroadcast(targetPlayer.getPlayerName() + " is protected");
-        }
-        MainActivity.pushData();
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mMainActivity);
+        builder.setTitle("Pick a player");
+        builder.setItems(this.playerNames.toArray(new CharSequence[this.playerNames.size()]), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int id) {
+                id += 1;
+
+                Player targetPlayer = Game.this.agetPlayerById(id);
+
+                if (targetPlayer.getLastPlayed() != 4) {
+                    Game.this.cardsMap.get(mCard).specialFunction(Game.this, curr, targetPlayer);
+                    //TODO: MainActivity.pushData();
+                }
+                else {
+                    Game.this.addBroadcast(targetPlayer.getPlayerName() + " is protected");
+                    MainActivity.pushData();
+                }
+
+                curr.setLastPlayed(mCard);
+
+            }
+        });
+        builder.show();
+
+        this.topCard = card;
+
     }
+
 
     public Player agetPlayerById(int playerId) {
         return this.players.get(playerId - 1);
@@ -186,6 +219,7 @@ public class Game {
 
     public void eliminate(Player player) {
         this.players.remove(player.getPlayerId());
+        this.playerNames.remove(player.getPlayerName());
         player.setInGame(false);
     }
 

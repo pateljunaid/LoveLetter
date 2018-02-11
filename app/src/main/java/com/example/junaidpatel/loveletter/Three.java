@@ -15,7 +15,7 @@ public class Three implements Card {
     }
 
     @Override
-    public void specialFunction(Game game, Integer choice, Player currentPlayer, Player targetPlayer) {
+    public void specialFunction(Game game, Player currentPlayer, Player targetPlayer) {
         if (currentPlayer.getCard1() > targetPlayer.getCard1()) {
             game.eliminate(targetPlayer);
             game.addBroadcast(targetPlayer.getPlayerName() + " compared cards with " + currentPlayer.getPlayerName());

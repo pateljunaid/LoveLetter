@@ -11,6 +11,6 @@ public interface Card {
     String getCardAbility();
     String getCardName();
 
-    void specialFunction(Game game, Integer choice, Player currentPlayer, Player targetPlayer);
+    void specialFunction(Game game, Player currentPlayer, Player targetPlayer);
 
 }
