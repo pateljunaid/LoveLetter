@@ -20,6 +20,7 @@ public class Two implements Card {
     public void specialFunction(Game game, Player currentPlayer, Player targetPlayer) {
         game.addBroadcast(currentPlayer.getPlayerName() + " took a peak at " + targetPlayer.getPlayerName() +
         "'s card");
-        MainActivity.showToast(targetPlayer.getPlayerName() + "is holding a " + targetPlayer.getCard1());
+        MainActivity.showToast(targetPlayer.getPlayerName() + " is holding a " + targetPlayer.getCard1());
+        MainActivity.pushData();
     }
 }

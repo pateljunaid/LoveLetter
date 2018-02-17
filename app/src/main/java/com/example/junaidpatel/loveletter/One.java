@@ -47,7 +47,7 @@ public class One implements Card {
                     mGame.addBroadcast(curr.getPlayerName() + " guesses a " + choice +
                             " on " + target.getPlayerName() + ". Wrong guess!");
                 }
-
+                MainActivity.pushData();
             }
         });
         builder.show();

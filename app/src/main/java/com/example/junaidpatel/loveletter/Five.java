@@ -19,5 +19,6 @@ public class Five implements Card{
     public void  specialFunction(Game game, Player currentPlayer, Player targetPlayer) {
         targetPlayer.setCard1(game.drawCard());
         game.addBroadcast(currentPlayer.getPlayerName() + " targeted " + targetPlayer.getPlayerName() + ". They drew a new card!");
+        MainActivity.pushData();
     }
 }

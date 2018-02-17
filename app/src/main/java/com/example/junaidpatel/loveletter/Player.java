@@ -9,7 +9,9 @@ package com.example.junaidpatel.loveletter;
 public class Player {
     private boolean isHost;
     private boolean inGame;
+    private boolean eliminated;
     private boolean playedFour;
+    private String secretMessage;
     private String playerName;
     private Integer playerId;
     private Integer lastPlayed;
@@ -93,6 +95,11 @@ public class Player {
         this.secretMessage = secretMessage;
     }
 
-    private String secretMessage;
+    public boolean isEliminated() {
+        return eliminated;
+    }
 
+    public void setEliminated(boolean eliminated) {
+        this.eliminated = eliminated;
+    }
 }

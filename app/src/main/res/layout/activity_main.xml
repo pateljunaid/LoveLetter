@@ -17,8 +17,7 @@
             android:id="@+id/resetDB"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
             android:layout_marginTop="62dp"
             android:text="Reset DB" />
 
@@ -43,10 +42,10 @@
         <TextView
             android:id="@+id/notifs"
             android:layout_width="wrap_content"
-            android:gravity="bottom"
             android:layout_height="100dp"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
+            android:gravity="bottom"
             android:text="Waiting for players..." />
 
         <ImageView

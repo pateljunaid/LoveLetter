@@ -81,51 +81,57 @@ public class MainActivity extends AppCompatActivity {
                 game = dataSnapshot.getValue(Game.class);
                 if (player.isInGame()) {
                     player = game.agetPlayerById(player.getPlayerId());
-                } else if (!player.isInGame()) {
-                    //Add player to the game
+                } else if (!player.isInGame() && !player.isEliminated()) {
+                    //Add new player to the game
                     game.addPlayer(player);
                     FirebaseDatabase.getInstance().getReference("gameData").setValue(game);
+                } else {
+                    showToast("You are eliminated!");
+                    Log.d("yakkity", "You are eliminated!");
+                    fbd.getInstance().getReference("gameData").removeEventListener(this);
+                    return;
                 }
 
                 //In-game updates
                 if (game.isHasStarted()) {
+                    Log.d("yakkity", "You are eliminated!");
 
                     //Check if game is done
                     if (game.getPlayers().size() == 1) {
-                        game.addBroadcast("Game over");
+                        endGame();
                     }
+                    else {
+                        card1.setImageResource(constants.drawableHashMap.get(player.getCard1()));
 
-                    card1.setImageResource(constants.drawableHashMap.get(player.getCard1()));
+                        playerList.setVisibility(View.INVISIBLE);
+                        deck.setVisibility(View.VISIBLE);
 
-                    playerList.setVisibility(View.INVISIBLE);
-                    deck.setVisibility(View.VISIBLE);
+                        //Display turn
+                        game.addBroadcast(constants.playerNames.get(game.getTurn() - 1) + "'s turn");
 
-                    //Display turn
-                    game.addBroadcast("Player " + game.getTurn() + "'s turn");
+                        //Display broadcast message
+                        showNotification(game.getBroadcast());
 
-                    //Display broadcast message
-                    showNotification(game.getBroadcast());
+                        //Show secret messages
+                        if (player.getSecretMessage() != null) {
+                            showToast(player.getSecretMessage());
+                        }
 
-                    //Show secret messages
-                    if (player.getSecretMessage() != null) {
-                        Toast.makeText(MainActivity.this, player.getSecretMessage(), Toast.LENGTH_LONG);
+                        //Allow person with the correct turn to play
+                        if (game.getTurn() == player.getPlayerId()) {
+                            showToast("Your turn");
+                            deck.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+                                    player.setCard2(game.drawCard());
+                                    card2.setImageResource(constants.drawableHashMap.get(player.getCard2()));
+                                    card2.setVisibility(View.VISIBLE);
+                                    setListeners();
+                                    deck.setOnClickListener(null);
+                                }
+                            });
+                        }
                     }
-
-                    //Allow person with the correct turn to play
-                    if (game.getTurn() == player.getPlayerId()) {
-                        deck.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                player.setCard2(game.drawCard());
-                                card2.setImageResource(constants.drawableHashMap.get(player.getCard2()));
-                                card2.setVisibility(View.VISIBLE);
-                                setListeners();
-                                deck.setOnClickListener(null);
-                            }
-                        });
-                    }
-
-
                 }
 
                 //Game hasn't started
@@ -168,6 +174,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    private void endGame() {
+        showToast("Game over!");
+        resetGame();
+    }
+
     private void resetGame() {
         Game game = new Game();
         game.setBroadcast("");
@@ -175,10 +186,11 @@ public class MainActivity extends AppCompatActivity {
         game.setPlayers(new ArrayList<Player>());
         game.playerNames = new ArrayList<String>();
         game.setTopCard(null);
-        game.setDeck(constants.deck);
+        game.setDeck(new ArrayList<Integer>());
         game.turn = 0;
         FirebaseDatabase.getInstance().getReference("gameData").setValue(game);
     }
+
     private void setListeners() {
         card1.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -195,6 +207,11 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public static void removeListeners() {
+        card1.setOnClickListener(null);
+        card2.setOnClickListener(null);
+    }
+
     private void initializeResources() {
         resetDB = (Button)findViewById(R.id.resetDB);
         startGame = (Button)findViewById(R.id.startGame);
@@ -207,7 +224,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public static void pushData(){
-        Log.d("yakkity", game.agetDeck().toString());
         game.asetTurn(player);
         FirebaseDatabase.getInstance().getReference("gameData").setValue(game);
     }

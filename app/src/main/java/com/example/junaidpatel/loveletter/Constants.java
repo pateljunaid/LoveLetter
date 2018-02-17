@@ -12,9 +12,9 @@ import java.util.List;
 public class Constants {
     public HashMap<Integer, Integer> drawableHashMap;
     public CharSequence[] guessList;
-
-    //    ArrayList deck = new ArrayList(Arrays.asList(1,1,1,1,1,2,2,3,3,4,4,5,5,6,7,8));
-    ArrayList deck = new ArrayList(Arrays.asList(2,1,2,1));
+    public ArrayList deck = new ArrayList(Arrays.asList(1,1,1,1,1,2,2,3,3,4,4,5,5,6,7,8));
+    public List<String> playerNames = Arrays.asList("Junaid", "Mudassir", "Nishat");
+//    ArrayList deck = new ArrayList(Arrays.asList(2,1,2,1));
 
     public Constants() {
         drawableHashMap = new HashMap<Integer, Integer>();
