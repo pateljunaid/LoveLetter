@@ -28,6 +28,6 @@ public class Three implements Card {
         else {
             game.addBroadcast("Compare was a tie");
         }
-        MainActivity.pushData();
+        MainActivity.nextTurn();
     }
 }

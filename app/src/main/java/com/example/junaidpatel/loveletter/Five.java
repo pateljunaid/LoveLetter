@@ -17,8 +17,16 @@ public class Five implements Card{
 
     @Override
     public void  specialFunction(Game game, Player currentPlayer, Player targetPlayer) {
-        targetPlayer.setCard1(game.drawCard());
-        game.addBroadcast(currentPlayer.getPlayerName() + " targeted " + targetPlayer.getPlayerName() + ". They drew a new card!");
-        MainActivity.pushData();
+        game.addBroadcast(currentPlayer.getPlayerName() + " targeted " + targetPlayer.getPlayerName());
+        game.setTopCard(targetPlayer.getCard1());
+        if (targetPlayer.getCard1() == 8) {
+            game.eliminate(targetPlayer);
+            game.addBroadcast("They dropped an 8, they're out!");
+        }
+        else {
+            targetPlayer.setCard1(game.drawCard());
+            game.addBroadcast("They drew a new card!");
+        }
+        MainActivity.nextTurn();
     }
 }

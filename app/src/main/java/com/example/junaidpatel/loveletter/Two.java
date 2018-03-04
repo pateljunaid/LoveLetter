@@ -1,7 +1,5 @@
 package com.example.junaidpatel.loveletter;
 
-import android.widget.Toast;
-
 public class Two implements Card {
     private String cardName = "priest";
     private String cardAbility = "Look at another player's hand.";
@@ -21,6 +19,6 @@ public class Two implements Card {
         game.addBroadcast(currentPlayer.getPlayerName() + " took a peak at " + targetPlayer.getPlayerName() +
         "'s card");
         MainActivity.showToast(targetPlayer.getPlayerName() + " is holding a " + targetPlayer.getCard1());
-        MainActivity.pushData();
+        MainActivity.nextTurn();
     }
 }

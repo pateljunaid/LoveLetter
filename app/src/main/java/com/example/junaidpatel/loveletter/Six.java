@@ -23,6 +23,6 @@ public class Six implements Card {
         targetPlayer.setCard1(one);
 
         game.addBroadcast(currentPlayer.getPlayerName() + " and " + targetPlayer.getPlayerName() + " have swapped hands!");
-        MainActivity.pushData();
+        MainActivity.nextTurn();
     }
 }

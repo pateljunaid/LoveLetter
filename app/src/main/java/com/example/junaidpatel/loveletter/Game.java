@@ -2,7 +2,6 @@ package com.example.junaidpatel.loveletter;
 
 import android.content.DialogInterface;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.View;
 
 import java.util.ArrayList;
@@ -15,22 +14,21 @@ import java.util.HashMap;
  */
 
 public class Game {
-    public ArrayList<String> playerNames = new ArrayList<String>();
     private ArrayList deck;
     private ArrayList<Player> players;
-    private HashMap<String, Player> playersMap;
-    private HashMap<Integer, Card> cardsMap = new HashMap<Integer, Card>();
+    private HashMap<Integer, Card> cardsMap;
     private Integer topCard;
     private String broadcast;
-    private boolean gameOn;
     private boolean hasStarted;
+    private boolean isOver;
     protected Integer turn;
 
     public Game() {
         this.deck = MainActivity.constants.deck;
-        this.players = new ArrayList<Player>();
-        this.playersMap = new HashMap<String, Player>();
+        this.players = new ArrayList<>();
+        this.cardsMap = new HashMap<>();
         this.turn = 0;
+        this.broadcast = "";
         Card one = new One();
         Card two = new Two();
         Card three = new Three();
@@ -49,17 +47,8 @@ public class Game {
         cardsMap.put(8, eight);
     }
 
-
     public String getBroadcast() {
         return broadcast;
-    }
-
-    public void setBroadcast(String broadcast) {
-        this.broadcast = broadcast;
-    }
-
-    public void addBroadcast(String broadcast) {
-        this.broadcast += "\n" + broadcast;
     }
 
     public ArrayList<Integer> getDeck() {
@@ -70,6 +59,10 @@ public class Game {
         this.deck = deck;
     }
 
+    public void addBroadcast(String broadcast) {
+        this.broadcast += "\n" + broadcast;
+    }
+
     public Integer getTopCard() {
         return topCard;
     }
@@ -78,47 +71,22 @@ public class Game {
         this.topCard = topCard;
     }
 
-    public boolean isGameOn() {
-        return gameOn;
-    }
-
     public ArrayList<Player> getPlayers() {
         return this.players;
-    }
-
-    public void setPlayers(ArrayList<Player> players) {
-        this.players = players;
     }
 
     public void addPlayer(Player player) {
 
         player.setPlayerId(this.players.size() + 1);
-        player.setPlayerName(MainActivity.constants.playerNames.get(player.getPlayerId() - 1));
+        player.setPlayerName("Player "+player.getPlayerId());
         this.players.add(player);
         player.setInGame(true);
 
         //Show the start game button to the host once they join
         if (player.getPlayerId() == 1) {
             MainActivity.startGame.setVisibility(View.VISIBLE);
+            MainActivity.resetDB.setVisibility(View.VISIBLE);
         }
-
-        //TODO: opt
-        if (this.players.size() >= 1) {
-            this.gameOn = true;
-        }
-
-//        this.playersMap.put(String.valueOf(player.getPlayerId()), player);
-        this.playerNames.add(player.getPlayerName());
-//        Log.d("yakkity", Game.this.playersMap.toString());
-
-    }
-
-    public void endGame() {
-        this.gameOn = false;
-        this.players.clear();
-        this.topCard = null;
-        this.deck = new ArrayList(Arrays.asList(1,1,1,1,1,2,2,3,3,4,4,5,5,6,7,8));
-        this.turn = 0;
     }
 
     public Integer getTurn() {
@@ -126,76 +94,83 @@ public class Game {
     }
 
     public void asetTurn(Player currPlayer) {
-        int i = this.players.indexOf(currPlayer);
+        int i = this.turn;
 
-        if (i == (this.players.size() - 1)) {
-            this.turn = this.players.get(0).getPlayerId();
+        if (!currPlayer.isEliminated()) {
+            i+=1;
         }
-        else {
-            this.turn = this.players.get(i + 1).getPlayerId();
+
+        if (i >= this.players.size()) {
+            i = 0;
         }
+
+        this.turn = i;
     }
 
     public void deal() {
         Collections.shuffle(this.deck);
-        //TODO: int burned = (int) this.deck.remove(0);
+        int burned = (int) this.deck.remove(0);
         for (Player player: this.players) {
             player.setCard1(this.drawCard());
         }
     }
 
     public Integer drawCard() {
-        Log.d("yakkity", this.getDeck().toString());
         return (Integer) this.deck.remove(0);
     }
 
-    public void playCard(Player currPlayer, int card, int cardNum) {
-        MainActivity.removeListeners();
-        MainActivity.card2.setVisibility(View.INVISIBLE);
-        if (cardNum == 1) {
-            currPlayer.setCard1(currPlayer.getCard2());
-            currPlayer.setCard2(null);
-        } else {
-            currPlayer.setCard2(null);
-        }
-        this.addBroadcast(currPlayer.getPlayerName() + " has played " + card);
-        this.topCard = card;
-        currPlayer.setLastPlayed(card);
-
-        final Player curr = currPlayer;
-        final int mCard = card;
-
+    public void playCard(final Player currPlayer, final int card, final int cardNum) {
         if (Arrays.asList(1,2,3,5,6).contains(card)) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mMainActivity);
+            final AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.mMainActivity);
             builder.setTitle("Pick a player");
-            //TODO: Disallow selecting self as a target
-            builder.setItems(this.playerNames.toArray(new CharSequence[this.playerNames.size()]), new DialogInterface.OnClickListener() {
+            builder.setItems(this.agetPlayerNames().toArray(new CharSequence[this.players.size()]), new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int id) {
-
-                    id+=1;
-                    Log.d("yakkity", String.valueOf(id));
-//                    Log.d("yakkity", Game.this.playersMap.toString());
-                    Log.d("yakkity", Game.this.playerNames.toString());
-
-                    Player targetPlayer = Game.this.agetPlayerById(id);
-
-                    if (targetPlayer.getLastPlayed() != 4) {
-                        Game.this.cardsMap.get(mCard).specialFunction(Game.this, curr, targetPlayer);
-                    } else {
-                        Game.this.addBroadcast(targetPlayer.getPlayerName() + " is protected");
-                        MainActivity.pushData();
+                    Player targetPlayer = Game.this.players.get(id);
+                    if (currPlayer == targetPlayer && card != 5) {
+                        MainActivity.showToast("Cannot target yourself");
+                        builder.show();
                     }
-                }
+                    else {
+                        MainActivity.removeListeners();
+                        Game.this.topCard = card;
+                        currPlayer.setLastPlayed(card);
+                        MainActivity.card2.setVisibility(View.INVISIBLE);
+                        if (cardNum == 1) {
+                            currPlayer.setCard1(currPlayer.getCard2());
+                            currPlayer.setCard2(null);
+                        } else {
+                            currPlayer.setCard2(null);
+                        }
+
+                        if (targetPlayer.getLastPlayed() != 4) {
+                            Game.this.cardsMap.get(card).specialFunction(Game.this, currPlayer, targetPlayer);
+                        }
+                        else {
+                            Game.this.addBroadcast(targetPlayer.getPlayerName() + " is protected");
+                            MainActivity.nextTurn();
+                        }
+                        Game.this.addBroadcast(currPlayer.getPlayerName() + " has played " + card + " on " + targetPlayer.getPlayerName());
+                    }
+                    }
             });
             builder.show();
 
         } else {
+            MainActivity.removeListeners();
+            Game.this.topCard = card;
+            currPlayer.setLastPlayed(card);
+            MainActivity.card2.setVisibility(View.INVISIBLE);
+            if (cardNum == 1) {
+                currPlayer.setCard1(currPlayer.getCard2());
+                currPlayer.setCard2(null);
+            } else {
+                currPlayer.setCard2(null);
+            }
             this.cardsMap.get(card).specialFunction(this, currPlayer, null);
-            MainActivity.pushData();
+            MainActivity.nextTurn();
         }
     }
-
 
     public Player agetPlayerById(int playerId) {
         for (Player player : this.players) {
@@ -207,17 +182,15 @@ public class Game {
         return null;
     }
 
-    public Player agetPlayerByName(String name) {
-        for (Player player : this.players) {
-            if (player.getPlayerName() == name) {
-                return player;
-            }
+    public ArrayList<String> agetPlayerNames() {
+        ArrayList<String> playerNames = new ArrayList<String>();
+        for (Player player: this.players) {
+            playerNames.add(player.getPlayerName());
         }
-
-        return null;
+        return playerNames;
     }
 
-    public boolean isHasStarted() {
+    public boolean getHasStarted() {
         return hasStarted;
     }
 
@@ -225,34 +198,22 @@ public class Game {
         this.hasStarted = hasStarted;
     }
 
-    public void startGame() {
-        this.setHasStarted(true);
-        this.deal();
-    }
-
     public void eliminate(Player player) {
+        this.addBroadcast(player.getPlayerName() + "  is eliminated");
         this.players.remove(agetPlayerById(player.getPlayerId()));
-        this.playerNames.remove(player.getPlayerName());
-//        this.playersMap.remove(String.valueOf(player.getPlayerId()));
         player.setInGame(false);
         player.setEliminated(true);
     }
 
-    public Player nextPlayer(Player currPlayer) {
-        int i = this.players.indexOf(currPlayer);
-
-        if (i == (this.players.size() - 1)) {
-            return this.players.get(0);
-        } else {
-            return this.players.get(i + 1);
-        }
+    public boolean isOver() {
+        return isOver;
     }
 
-//    public HashMap<String, Player> getPlayersMap() {
-//        return playersMap;
-//    }
-//
-//    public void setPlayersMap(HashMap<String, Player> playersMap) {
-//        this.playersMap = playersMap;
-//    }
+    public void setOver(boolean over) {
+        isOver = over;
+    }
+
+    public Player agetCurrentTurnPlayer() {
+        return this.players.get(this.turn);
+    }
 }

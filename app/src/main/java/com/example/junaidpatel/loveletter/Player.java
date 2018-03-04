@@ -79,14 +79,6 @@ public class Player {
         this.lastPlayed = lastPlayed;
     }
 
-    public void setPlayedFour(boolean playedFour) {
-        this.playedFour = playedFour;
-    }
-
-    public boolean getPlayedFour() {
-        return playedFour;
-    }
-
     public String getSecretMessage() {
         return secretMessage;
     }
@@ -101,5 +93,14 @@ public class Player {
 
     public void setEliminated(boolean eliminated) {
         this.eliminated = eliminated;
+    }
+
+    public boolean hasCard(int x) {
+        if (this.card1 == x || this.card2 == x) {
+            return true;
+        }
+        else {
+            return false;
+        }
     }
 }

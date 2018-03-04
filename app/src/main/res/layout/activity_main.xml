@@ -9,6 +9,7 @@
 
     <RelativeLayout
         android:layout_width="match_parent"
+        android:background="@drawable/background"
         android:layout_height="match_parent"
         tools:layout_editor_absoluteX="8dp"
         tools:layout_editor_absoluteY="8dp">
@@ -19,6 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentRight="true"
             android:layout_marginTop="62dp"
+            android:visibility="invisible"
             android:text="Reset DB" />
 
         <Button
@@ -32,6 +34,7 @@
 
         <TextView
             android:id="@+id/playerList"
+            android:textColor="#FFFFFF"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
@@ -43,6 +46,7 @@
             android:id="@+id/notifs"
             android:layout_width="wrap_content"
             android:layout_height="100dp"
+            android:textColor="#FFFFFF"
             android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
             android:gravity="bottom"
@@ -85,7 +89,26 @@
             android:layout_alignParentBottom="true"
             android:layout_marginBottom="20dp"
             />
-            <!--android:src="@drawable/baron"-->
+
+        <EditText
+            android:id="@+id/inputName"
+            android:layout_above="@id/startGame"
+            android:layout_centerInParent="true"
+            android:width="200dp"
+            android:hint="Enter your name"
+            android:textColor="#FFFFFF"
+            android:textColorHint="#FFFFFF"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        />
+
+        <Button
+            android:id="@+id/ok"
+            android:layout_width="45dp"
+            android:layout_height="45dp"
+            android:layout_above="@id/startGame"
+            android:layout_toRightOf="@id/inputName"
+            android:text="Ok" />
 
     </RelativeLayout>
 </android.support.constraint.ConstraintLayout>

@@ -33,21 +33,16 @@ public class One implements Card {
             public void onClick(DialogInterface dialog, int id) {
 
                 Integer choice = id + 1;
-                Log.d("yakkity", "Choice chosen: " +choice);
 
                 if (choice == 1) {
                     mGame.addBroadcast("Cannot guess a 1");
                 } else if (targetPlayer.getCard1() == choice) {
-                    Log.d("yakkity", "right guess");
+                    mGame.addBroadcast(curr.getPlayerName() + " guesses a " + choice);
                     mGame.eliminate(targetPlayer);
-                    mGame.addBroadcast(curr.getPlayerName() + " guesses a " + choice +
-                            " on " + target.getPlayerName() + ". They are eliminated!");
                 } else {
-                    Log.d("yakkity", "wrong guess");
-                    mGame.addBroadcast(curr.getPlayerName() + " guesses a " + choice +
-                            " on " + target.getPlayerName() + ". Wrong guess!");
+                    mGame.addBroadcast(curr.getPlayerName() + " guesses a " + choice + ". Wrong guess!");
                 }
-                MainActivity.pushData();
+                MainActivity.nextTurn();
             }
         });
         builder.show();
